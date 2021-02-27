@@ -15,7 +15,7 @@
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
                 <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg">
                     <message-container :messages="messages" />
-                    <input-message :room="currentRoom" v-on:messageSent="getMessages" />
+                    <input-message :room="currentRoom" v-on:messageSent="getMessages()" />
                 </div>
             </div>
         </div>
@@ -42,6 +42,14 @@
                 messages : [],
             }
         },
+        watch:{
+            currentRoom(val, oldVal){
+                if(oldVal.id){
+                    this.disconnect(oldVal);
+                }
+                this.connect();
+            }
+        },
         methods:{
             getRooms(){
                 let url = `/chat/rooms`;
@@ -56,7 +64,7 @@
             },
             setRoom(room){
                 this.currentRoom = room;
-                this.getMessages();
+                // this.getMessages();
             },
             getMessages(){
                 let url = `/chat/rooms/${this.currentRoom.id}/messages`;
@@ -67,6 +75,21 @@
                        .catch(err => {
                            console.log(err);
                        }) 
+            },
+            connect(){
+                if(this.currentRoom.id){
+                    let vm = this;
+                    this.getMessages();
+                    let channel = `chat.${this.currentRoom.id}`;
+                    window.Echo.private(channel).listen('NewChatMessage', e => {
+                        vm.getMessages();
+                        console.log('listening');
+                    });
+                }
+            },
+            disconnect(room){
+                let leaveFrom = `chat.${room.id}`;
+                window.Echo.leave(leaveFrom);
             }
         },
         created(){
