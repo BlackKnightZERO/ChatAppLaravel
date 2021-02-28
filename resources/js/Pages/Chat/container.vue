@@ -90,7 +90,7 @@
             disconnect(room){
                 let leaveFrom = `chat.${room.id}`;
                 window.Echo.leave(leaveFrom);
-            }
+            },
         },
         created(){
             this.getRooms();

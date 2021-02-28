@@ -32,4 +32,8 @@ class ChatController extends Controller
 
         return $newMessage;
     }
+
+    public function getAuthId(){
+      return Auth::id();
+    }
 }
