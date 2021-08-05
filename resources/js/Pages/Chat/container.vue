@@ -27,7 +27,6 @@
     import messageContainer from './messageContainer.vue'
     import inputMessage from './inputMessage.vue'
     import ChatRoomSelection from './chatRoomSelection.vue'
-
     export default {
         components: {
             AppLayout,
